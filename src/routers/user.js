@@ -41,17 +41,17 @@ router.post('/users/login', async (req, res) => {                    // login
     }
 })
 
-// "name": "Bud",
-// "email": "myemail@123.com",
-// "password": "add3223j234#d"
+// "name": "Amy",
+// "email": "a@123.com",
+// "password": "pppp1234#"
 
-// "name": "Tim",
-// "email": "123@hello.com",
-// "password": "88884444AAAA#d"
+// "name": "Chris",
+// "email": "c@123.com",
+// "password": "pppp1234#"
 
 // "name": "Brent",
-// "email": "xyz1234@hello.com",
-// "password": "pppppgggg#d"
+// "email": "b@1.com",
+// "password": "pppp1234#"
 
 router.post('/users/logout', auth, async (req, res) => {
     try {
