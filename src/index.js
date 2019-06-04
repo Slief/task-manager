@@ -66,3 +66,18 @@ pet.toJSON = function () {
     return this
 }
 console.log(JSON.stringify(pet))
+
+// const Task = require('./models/task')
+// const User = require('./models/user')
+// // task id 5cf6d33e8f1ae53ba4bfd59a
+// // user id 5cf6d1d563c8ad540c70a642
+// const main = async () => {
+//     // const task = await Task.findById('5cf6d33e8f1ae53ba4bfd59a')
+//     // await task.populate('owner').execPopulate()
+//     // console.log(task)
+//     const user = await User.findById('5cf6d1d563c8ad540c70a642')
+//     await user.populate('tasks').execPopulate() 
+//     console.log(user.tasks)
+// }
+
+// main()
