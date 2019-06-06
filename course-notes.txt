@@ -1,0 +1,47 @@
+Start nodemon
+- nodemon src/app.js -e js,hbs
+
+Add to git
+- from root     git init
+- add file  .gitignore
+- add node_modules/  to .gitignore
+- git add .
+- git status   to see
+- git commit -m "Init commit"
+
+Upload changed files to git
+- git status 
+- git add .
+- git commit -m "Changes to about page"
+
+Initial push to github.com
+- create a new repository on gitHub.com web site
+- this command does NOT push the local repository to gitHub, it just explains how to do it. (like adding a contact to your phone)
+        git remote add origin https://github.com/Slief/task-manager.git
+-
+- git push          equivalent to git push -u orign master   Note: see section 66 - Pushing to GitHub
+
+Push to heroku ( production)
+- git push heroku master      pushers latest commit to heroku
+
+Start local Note: See package.json script   dev)
+ - npm run dev
+
+>>>>>>>>>>> Task manager
+install MongoDB application
+- within VS Code terminal, to run MongoDB     /users/bslie/mongodb/bin/mongod.exe --dbpath=/users/bslie/mongodb-data
+- npm init -y         to create package.json et application
+- npm i mongodb       to install drivers
+- node mongodb.js     to run sample app
+- http://mongodb.github.io/node-mongodb-native/3.2/api/MongoClient.html  mongo - node docs
+
+- install mongoose        npm i mongoose
+- install validator       npm i validator
+- REST representational state transfer
+
+after changes to package.json,to start app
+- npm run dev
+- https://httpstatuses.com/
+
+File uploads
+- install multer      npm i multer     Sec #122

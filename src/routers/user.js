@@ -1,6 +1,8 @@
 const express = require('express')
 require('../db/mongoose')
 const mongoose = require('mongoose')
+const multer = require('multer')
+
 const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
@@ -125,6 +127,65 @@ router.delete('/users/me', auth, async (req, res) => {
         res.status(500).send()
     }
 })
+
+const upload = multer({
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            console.log('failed file upload')
+            return cb(new Error('Please upload an image file (jpg, jpeg or png)'))
+        }
+        console.log('success file upload')
+        cb(undefined, true)
+        // ways to call the callback (cb) function
+        // cb( new Error('File must be of type "xyz"')
+        // cb(undefined, true)   success
+        // cb(undefined, false)  silently reject (don't use)
+
+    }
+})  
+
+
+router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+    req.user.avatar =  req.file.buffer
+    await req.user.save()
+
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message })
+})
+
+router.delete('/users/me/avatar', auth, async (req, res) => {
+    req.user.avatar = undefined
+    await req.user.save()
+    res.send()
+})
+
+router.get('/users/:id/avatar', async (req, res) => {
+    try {
+        const user = await User.findById( req.params.id )
+        if (!user || !user.avatar ) {
+            throw new Error()
+        } 
+        res.set('Content-Type', 'image/jpg')
+        res.send(user.avatar)
+
+    } catch(e) {
+        res.status(404).send()
+    }
+})
+
+// const multer = require('multer')
+// const upload = multer({
+//     dest: 'images'
+// })
+
+// app.post('/upload', upload.single('upload'), (req, res) => {
+//     res.send()
+// })
+
 
 
 module.exports = router

@@ -8,18 +8,31 @@ const taskRouter = require('./routers/task')
 const app = express()
 const port = process.env.PORT || 3000
 
-// app.use((req, res, next) => {
-//     // console.log(req.method, req.path)
-//     // next()
-//     if (req.method === 'GET') {
-//         res.send('GET requests are disabled')
-//     } else {
-//         next()
-//     }
-// })
 
-// app.use((req, res, next) => {
-//     res.status(503).send('Application is temporarily in maintenance mode. Check back in a few minutes.')
+const multer = require('multer')
+const upload = multer({
+    dest: 'images',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(doc|docx)$/)) {
+            return cb(new Error('Please upload a Word document'))
+        }
+        cb(undefined, true)
+        // ways to call the callback (cb) function
+        // cb( new Error('File must be of type "xyz"')
+        // cb(undefined, true)   success
+        // cb(undefined, false)  silently reject (don't use)
+
+    }
+
+})
+
+// app.post('/upload', upload.single('upload'), (req, res) => {
+//     res.send()
+// }, (error, req, res, next) => {
+//     res.status(400).send({ error: error.message })
 // })
 
 app.use(express.json()) 
@@ -31,32 +44,6 @@ app.listen(port, () => {
 })
 
 
-// const jwt = require('jsonwebtoken')
-
-// const myFunction = async () => {
-//     const token = jwt.sign({_id: 'abcd1234'}, 'thisisacoolapp', { expiresIn: '15 seconds'} )
-//     console.log(token)
-
-//     const data = jwt.verify(token, 'thisisacoolapp!')
-//     console.log(data)
-// }`
-
-// myFunction()
-
-// const bcrypt = require ('bcryptjs')
-
-// const myFunction = async () => {
-//     const password = 'Red12345!'
-//     const hashedPassword = await bcrypt.hash(password, 8)
-//     console.log(password)
-//     console.log(hashedPassword)
-    
-//     const isMatch = await bcrypt.compare(password, hashedPassword)
-//     console.log(isMatch)
-// }
-
-// myFunction()
-
 const pet = {
     name: "Shelby"
 }
@@ -66,18 +53,3 @@ pet.toJSON = function () {
     return this
 }
 console.log(JSON.stringify(pet))
-
-// const Task = require('./models/task')
-// const User = require('./models/user')
-// // task id 5cf6d33e8f1ae53ba4bfd59a
-// // user id 5cf6d1d563c8ad540c70a642
-// const main = async () => {
-//     // const task = await Task.findById('5cf6d33e8f1ae53ba4bfd59a')
-//     // await task.populate('owner').execPopulate()
-//     // console.log(task)
-//     const user = await User.findById('5cf6d1d563c8ad540c70a642')
-//     await user.populate('tasks').execPopulate() 
-//     console.log(user.tasks)
-// }
-
-// main()
