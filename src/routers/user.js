@@ -2,14 +2,12 @@ const express = require('express')
 require('../db/mongoose')
 const mongoose = require('mongoose')
 const multer = require('multer')
+const sharp = require('sharp')
 
 const User = require('../models/user')
 const auth = require('../middleware/auth')
+const { sendWelcomeEmail, sendGoodbyeEmail } = require('../emails/account')
 const router = new express.Router()
-
-// router.get('/test', (req, res) => {
-//     res.send("test from new file")
-// }) 
 
 router.post('/users', async (req, res) => {                          // Create user
     // console.log(req.body)
@@ -18,18 +16,13 @@ router.post('/users', async (req, res) => {                          // Create u
     
     try {
         await user.save()  // evertyhing after this only runs if it save returns either successfuly or un successfuly.
+        sendWelcomeEmail(user.email, user.name)
         const token = await user.generateAuthToken()
         
         res.status(201).send({ user, token })
     } catch(e) {
         res.status(400).send(e)
     }
-
-    // user.save().then(() => {
-    //     res.status(201).send(user)
-    // }).catch((e) => {
-    //     res.status(400).send(e)
-    // }) 
 })  
 
 router.post('/users/login', async (req, res) => {                    // login
@@ -115,13 +108,9 @@ router.delete('/users/me', auth, async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
         return res.status(404).send();
     }
-
     try {
-        // const user = await User.findByIdAndDelete(_id, )
-        // if (!user) {
-        //     return res.status(404).send()
-        // }
         await req.user.remove()
+        sendGoodbyeEmail(req.user.email, req.user.name)
         res.status(200).send(req.user)
     } catch(e) {
         res.status(500).send()
@@ -147,9 +136,10 @@ const upload = multer({
     }
 })  
 
-
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
-    req.user.avatar =  req.file.buffer
+    // req.user.avatar =  req.file.buffer
+    const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250}).png().toBuffer()
+    req.user.avatar = buffer
     await req.user.save()
 
     res.send()
@@ -169,23 +159,12 @@ router.get('/users/:id/avatar', async (req, res) => {
         if (!user || !user.avatar ) {
             throw new Error()
         } 
-        res.set('Content-Type', 'image/jpg')
+        res.set('Content-Type', 'image/png')
         res.send(user.avatar)
 
     } catch(e) {
         res.status(404).send()
     }
 })
-
-// const multer = require('multer')
-// const upload = multer({
-//     dest: 'images'
-// })
-
-// app.post('/upload', upload.single('upload'), (req, res) => {
-//     res.send()
-// })
-
-
 
 module.exports = router

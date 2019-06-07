@@ -1,1 +1,6 @@
 node_modules/
+course-notes.txt
+config/
+task manager.code-workspace
+playground/
+mongodb.js
